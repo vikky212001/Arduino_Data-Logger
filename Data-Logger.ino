@@ -1,5 +1,7 @@
 #include <DHT.h>
 #include <LiquidCrystal.h>
+#include <Wire.h> 
+#include <RTClib.h>
 
 #define DHTPIN 2       // Define the pin where your DHT11 is connected
 #define DHTTYPE DHT11  // DHT11 sensor type
@@ -10,6 +12,7 @@
 DHT dht(DHTPIN, DHTTYPE); // Initialize DHT library
 DHT dht1(DHTPIN1, DHTTYPE1);
 
+RTC_DS3231 rtc;
 LiquidCrystal lcd(8, 9, 4, 5, 6, 7);  // Initialize the LCD library
 
 void setup() {
@@ -17,11 +20,15 @@ void setup() {
   dht.begin();         // Initialize the DHT sensor
   dht1.begin();
   lcd.begin(16, 2);    // Initialize the LCD screen with 16 columns and 2 rows
+  if (!rtc.begin()) {
+    Serial.println("Couldn't find RTC");
+    while (1);
+  }
 }
 
 void loop() {
-  // Wait a few seconds between measurements
-  delay(2000);
+  DateTime now = rtc.now();
+  delay(1000);
 
   // Read temperature and humidity from the sensor
   int temperature = dht.readTemperature();
@@ -43,15 +50,39 @@ void loop() {
   // Print temperature and humidity to the serial monitor
   Serial.print("Temperature: ");
   Serial.print(temperature);
-  Serial.print(" °C | Humidity: ");
+  Serial.print("°C | Humidity: ");
   Serial.print(humidity);
-  Serial.println("%");
+  Serial.print("% ");
+  Serial.print(now.year(), DEC);
+  Serial.print('/');
+  Serial.print(now.month(), DEC);
+  Serial.print('/');
+  Serial.print(now.day() , DEC);
+  Serial.print(" ");
+  Serial.print(now.hour(), DEC);
+  Serial.print(':');
+  Serial.print(now.minute(), DEC);
+  Serial.print(':');
+  Serial.print(now.second(), DEC);
+  Serial.println();
 
   Serial.print("Temperature 1: ");
   Serial.print(temperature1);
-  Serial.print(" °C | Humidity 1: ");
+  Serial.print("°C | Humidity 1: ");
   Serial.print(humidity1);
-  Serial.println("%");
+  Serial.print("% ");
+  Serial.print(now.year(), DEC);
+  Serial.print('/');
+  Serial.print(now.month(), DEC);
+  Serial.print('/');
+  Serial.print(now.day() , DEC);
+  Serial.print(" ");
+  Serial.print(now.hour(), DEC);
+  Serial.print(':');
+  Serial.print(now.minute(), DEC);
+  Serial.print(':');
+  Serial.print(now.second(), DEC);
+  Serial.println();
 
   // Display temperature and humidity on the LCD screen
   lcd.clear(); // Clear the LCD screen
@@ -70,4 +101,12 @@ void loop() {
   lcd.setCursor(5, 1); // Set the cursor to the second row, first column
   lcd.print("H1:");
   lcd.print(humidity1);
+  lcd.setCursor(11, 0); // Set the cursor to the first row, first column
+  lcd.print(now.hour(), DEC);
+  lcd.print(':');
+  lcd.print(now.minute(), DEC);
+  lcd.setCursor(11, 1); // Set the cursor to the first row, first column
+  lcd.print(now.day(), DEC);
+  lcd.print('/');
+  lcd.print(now.month(), DEC);
 }
