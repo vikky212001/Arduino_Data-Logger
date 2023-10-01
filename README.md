@@ -5,7 +5,7 @@ This is a Arduino Project related to Data Logger which Record the Temperature an
 
 Components Used:
 
-Arduino UNO /n
+Arduino UNO 
 LCD KeyPad Shield
 DHT11 (Tempearture & Humidity Sensor)
 DS3231 RTC (Real Time Clock)
