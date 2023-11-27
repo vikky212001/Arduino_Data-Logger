@@ -38,8 +38,8 @@ String head[20];
 String body[45];
 String deviceName = "Logger";
 const String password = "1234";
-String logType = "null";
-String NoOfSensor = "null";
+String logType = "Temperature";
+String NoOfSensor = "1";
 String rType = "C";
 bool unit = false;
 String T1SV, H1SV, T1UL, T1LL, H1UL, H1LL, T1C, H1C, T2SV, H2SV, T2UL, T2LL, H2UL, H2LL, T2C, H2C;
@@ -47,7 +47,6 @@ String T3SV, H3SV, T3UL, T3LL, H3UL, H3LL, T3C, H3C, T4SV, H4SV, T4UL, T4LL, H4U
 
 void setup() {
   Serial.begin(9600);
-  Serial.println("Starting Setup");
   lcd.begin(16, 2);
   if (NoOfSensor.equals("1")) {
     dht.begin();
@@ -108,7 +107,7 @@ void setup() {
     Serial.println(deviceName + "_Error_SDFail");
     lcd.setCursor(0, 0);
     lcd.print("SD Fail");
-    delay(5000);
+    delay(3000);
     return;
   }
   while (!rtc.begin()) {
@@ -123,8 +122,7 @@ void setup() {
     Serial.println("RTC lost power, let's set the time!");
     rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
   }
-  readConfigFromSD();
-  Serial.println("Ending Setup");
+  //readConfigFromSD();
 }
 
 void loop() {
@@ -160,6 +158,7 @@ void loop() {
   bool humi2 = false;
   bool humi3 = false;
   bool humi4 = false;
+
   for (int i = 0; i < 20; i++) {
     head[i] = "";
   }
@@ -374,15 +373,10 @@ void loop() {
       }
     }
   }
-
-  if (logType.equals("null") || logType.trim().isEmpty() || NoOfSensor.equals("null") || NoOfSensor.trim().isEmpty()) {
-    Serial.println(deviceName + "_MSG_ConfigLog");
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print("Configure ");
-    lcd.setCursor(0, 1);
-    lcd.print("Before Use");
-  } else if (logType.equals("Temperature")) {
+  Serial.println(logType);
+  if (logType.equals("Temperature")) {
+    logType = trim(logType);
+    NoOfSensor = trim(NoOfSensor);
     if (NoOfSensor.equals("1")) {
       if (isnan(T1)) {
         Serial.println(deviceName + "_Error_S1_Fail");
@@ -396,7 +390,6 @@ void loop() {
       } else {
         Serial.print(T1, 2);
       }
-      Serial.print(" Date/Time: ");
       dateTime();
       Serial.println();
 
@@ -424,7 +417,7 @@ void loop() {
       lcd.print(day, DEC);
       lcd.print('/');
       lcd.print(month, DEC);
-      if (!temp1) {
+      if (!temp1 && T1SV.) {
         if (T1 > T1UL.toFloat()) {
           digitalWrite(r1, LOW);
           Serial.println(deviceName + "_WARN_T1_High_SV_" + T1SV + "_PV_" + T1);
@@ -2387,7 +2380,7 @@ void writeConfigToSD() {
   dataFile = SD.open("config.txt", O_WRITE | O_CREAT | O_TRUNC);
   if (dataFile) {
     dataFile.println(deviceName);
-    dataFile.println(logType);
+    dataFile.println(trim(logType));
     dataFile.println(NoOfSensor);
     dataFile.println(rType);
     dataFile.println(T1SV);
@@ -2433,7 +2426,7 @@ void readConfigFromSD() {
   if (dataFile) {
     if (dataFile.size() > 0) {
       deviceName = dataFile.readStringUntil('\n');
-      logType = dataFile.readStringUntil('\n');
+      trim(logType) = dataFile.readStringUntil('\n');
       NoOfSensor = dataFile.readStringUntil('\n');
       rType = dataFile.readStringUntil('\n');
       T1SV = dataFile.readStringUntil('\n');
@@ -2469,11 +2462,22 @@ void readConfigFromSD() {
       T4C = dataFile.readStringUntil('\n');
       H4C = dataFile.readStringUntil('\n');
       dataFile.close();
-    }
-    else{
+    } else {
       Serial.println(deviceName + "_Error_EmptyConfig");
     }
   } else {
     Serial.println("Error opening config file");
   }
+}
+
+String trim(String str) {
+  int startIdx = 0;
+  while (str.charAt(startIdx) == ' ' || str.charAt(startIdx) == '\t') {
+    startIdx++;
+  }
+  int endIdx = str.length() - 1;
+  while (endIdx >= 0 && (str.charAt(endIdx) == ' ' || str.charAt(endIdx) == '\t')) {
+    endIdx--;
+  }
+  return str.substring(startIdx, endIdx + 1);
 }
