@@ -42,8 +42,38 @@ String logType = "Temperature";
 String NoOfSensor = "1";
 String rType = "C";
 bool unit = false;
-String T1SV, H1SV, T1UL, T1LL, H1UL, H1LL, T1C, H1C, T2SV, H2SV, T2UL, T2LL, H2UL, H2LL, T2C, H2C;
-String T3SV, H3SV, T3UL, T3LL, H3UL, H3LL, T3C, H3C, T4SV, H4SV, T4UL, T4LL, H4UL, H4LL, T4C, H4C;
+String T1SV = "0";
+String H1SV = "0";
+String T1UL = "0";
+String T1LL = "0";
+String H1UL = "0";
+String H1LL = "0";
+String T1C = "0";
+String H1C = "0";
+String T2SV = "0";
+String H2SV = "0";
+String T2UL = "0";
+String T2LL = "0";
+String H2UL = "0";
+String H2LL = "0";
+String T2C = "0";
+String H2C = "0";
+String T3SV = "0";
+String H3SV = "0";
+String T3UL = "0";
+String T3LL = "0";
+String H3UL = "0";
+String H3LL = "0";
+String T3C = "0";
+String H3C = "0";
+String T4SV = "0";
+String H4SV = "0";
+String T4UL = "0";
+String T4LL = "0";
+String H4UL = "0";
+String H4LL = "0";
+String T4C = "0";
+String H4C = "0";
 
 void setup() {
   Serial.begin(9600);
@@ -122,7 +152,7 @@ void setup() {
     Serial.println("RTC lost power, let's set the time!");
     rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
   }
-  //readConfigFromSD();
+  readConfigFromSD();
 }
 
 void loop() {
@@ -169,7 +199,6 @@ void loop() {
     String inputLine = Serial.readStringUntil('\n');
     int headCount = splitString(inputLine, '_', head);
     String name = head[0];
-    Serial.println(head[2]);
     if (name.equals(deviceName)) {
       String cmd = head[1];
       if (cmd.equals("ChangeName")) {
@@ -373,9 +402,8 @@ void loop() {
       }
     }
   }
-  Serial.println(logType);
+  logType = trim(logType);
   if (logType.equals("Temperature")) {
-    logType = trim(logType);
     NoOfSensor = trim(NoOfSensor);
     if (NoOfSensor.equals("1")) {
       if (isnan(T1)) {
@@ -417,7 +445,7 @@ void loop() {
       lcd.print(day, DEC);
       lcd.print('/');
       lcd.print(month, DEC);
-      if (!temp1 && T1SV.) {
+      if (!temp1 && T1LL.toFloat() != 0 && T1UL.toFloat() != 0) {
         if (T1 > T1UL.toFloat()) {
           digitalWrite(r1, LOW);
           Serial.println(deviceName + "_WARN_T1_High_SV_" + T1SV + "_PV_" + T1);
@@ -513,7 +541,7 @@ void loop() {
       lcd.print('/');
       lcd.print(month, DEC);
 
-      if (!temp1) {
+      if (!temp1 && T1LL.toFloat() != 0 && T1UL.toFloat() != 0) {
         if (T1 > T1UL.toFloat()) {
           digitalWrite(r1, LOW);
           Serial.println(deviceName + "_WARN_T1_High_SV_" + T1SV + "_PV_" + T1);
@@ -531,7 +559,7 @@ void loop() {
           lcd.print("  ");
         }
       }
-      if (!temp2) {
+      if (!temp2 && T2LL.toFloat() != 0 && T2UL.toFloat() != 0) {
         if (T2 > T2UL.toFloat()) {
           digitalWrite(r3, LOW);
           Serial.println(deviceName + "_WARN_T2_High_SV_" + T2SV + "_PV_" + T2);
@@ -601,7 +629,6 @@ void loop() {
       }
       dateTime();
       Serial.println();
-
       lcd.clear();
       lcd.setCursor(0, 0);
       lcd.print("T1   T2   T3");
@@ -648,7 +675,7 @@ void loop() {
       lcd.setCursor(13, 1);
       lcd.print("   ");
 
-      if (!temp1) {
+      if (!temp1 && T1LL.toFloat() != 0 && T1UL.toFloat() != 0) {
         if (T1 > T1UL.toFloat()) {
           digitalWrite(r1, LOW);
           Serial.println(deviceName + "_WARN_T1_High_SV_" + T1SV + "_PV_" + T1);
@@ -666,7 +693,7 @@ void loop() {
           lcd.print(" ");
         }
       }
-      if (!temp2) {
+      if (!temp2 && T2LL.toFloat() != 0 && T2UL.toFloat() != 0) {
         if (T2 > T2UL.toFloat()) {
           digitalWrite(r3, LOW);
           Serial.println(deviceName + "_WARN_T2_High_SV_" + T2SV + "_PV_" + T2);
@@ -684,7 +711,7 @@ void loop() {
           lcd.print(" ");
         }
       }
-      if (!temp3) {
+      if (!temp3 && T3LL.toFloat() != 0 && T3UL.toFloat() != 0) {
         if (T3 > T3UL.toFloat()) {
           digitalWrite(r5, LOW);
           Serial.println(deviceName + "_WARN_T3_High_SV_" + T3SV + "_PV_" + T3);
@@ -834,7 +861,7 @@ void loop() {
       lcd.print(':');
       lcd.print(minute, DEC);
 
-      if (!temp1) {
+      if (!temp1 && T1LL.toFloat() != 0 && T1UL.toFloat() != 0) {
         if (T1 > T1UL.toFloat()) {
           digitalWrite(r1, LOW);
           Serial.println(deviceName + "_WARN_T1_High_SV_" + T1SV + "_PV_" + T1);
@@ -846,7 +873,7 @@ void loop() {
           digitalWrite(r2, HIGH);
         }
       }
-      if (!temp2) {
+      if (!temp2 && T2LL.toFloat() != 0 && T2UL.toFloat() != 0) {
         if (T2 > T2UL.toFloat()) {
           digitalWrite(r3, LOW);
           Serial.println(deviceName + "_WARN_T2_High_SV_" + T2SV + "_PV_" + T2);
@@ -858,7 +885,7 @@ void loop() {
           digitalWrite(r4, HIGH);
         }
       }
-      if (!temp3) {
+      if (!temp3 && T3LL.toFloat() != 0 && T3UL.toFloat() != 0) {
         if (T3 > T3UL.toFloat()) {
           digitalWrite(r5, LOW);
           Serial.println(deviceName + "_WARN_T3_High_SV_" + T3SV + "_PV_" + T3);
@@ -870,7 +897,7 @@ void loop() {
           digitalWrite(r6, HIGH);
         }
       }
-      if (!temp4) {
+      if (!temp4 && T4LL.toFloat() != 0 && T4UL.toFloat() != 0) {
         if (T4 > T4UL.toFloat()) {
           digitalWrite(r7, LOW);
           Serial.println(deviceName + "_WARN_T4_High_SV_" + T4SV + "_PV_" + T4);
@@ -946,7 +973,7 @@ void loop() {
       lcd.print('/');
       lcd.print(month, DEC);
 
-      if (!humi1) {
+      if (!humi1 && H1LL.toInt() != 0 && H1UL.toInt() != 0) {
         if (H1 > H1UL.toInt()) {
           digitalWrite(r1, LOW);
           Serial.println(deviceName + "_WARN_H1_High_SV_" + H1SV + "_PV_" + H1);
@@ -1040,7 +1067,7 @@ void loop() {
       lcd.print('/');
       lcd.print(month, DEC);
 
-      if (!humi1) {
+      if (!humi1 && H1LL.toInt() != 0 && H1UL.toInt() != 0) {
         if (H1 > H1UL.toInt()) {
           digitalWrite(r1, LOW);
           Serial.println(deviceName + "_WARN_H1_High_SV_" + H1SV + "_PV_" + H1);
@@ -1058,7 +1085,7 @@ void loop() {
           lcd.print("  ");
         }
       }
-      if (!humi2) {
+      if (!humi2 && H2LL.toInt() != 0 && H2UL.toInt() != 0) {
         if (H2 > H2UL.toInt()) {
           digitalWrite(r3, LOW);
           Serial.println(deviceName + "_WARN_H2_High_SV_" + H2SV + "_PV_" + H2);
@@ -1173,7 +1200,7 @@ void loop() {
       }
       lcd.setCursor(13, 1);
       lcd.print("   ");
-      if (!humi1) {
+      if (!humi1 && H1LL.toInt() != 0 && H1UL.toInt() != 0) {
         if (H1 > H1UL.toInt()) {
           digitalWrite(r1, LOW);
           Serial.println(deviceName + "_WARN_H1_High_SV_" + H1SV + "_PV_" + H1);
@@ -1191,7 +1218,7 @@ void loop() {
           lcd.print(" ");
         }
       }
-      if (!humi2) {
+      if (!humi2 && H2LL.toInt() != 0 && H2UL.toInt() != 0) {
         if (H2 > H2UL.toInt()) {
           digitalWrite(r3, LOW);
           Serial.println(deviceName + "_WARN_H2_High_SV_" + H2SV + "_PV_" + H2);
@@ -1209,7 +1236,7 @@ void loop() {
           lcd.print(" ");
         }
       }
-      if (!humi3) {
+      if (!humi3 && H3LL.toInt() != 0 && H3UL.toInt() != 0) {
         if (H3 > H3UL.toInt()) {
           digitalWrite(r5, LOW);
           Serial.println(deviceName + "_WARN_H3_High_SV_" + H3SV + "_PV_" + H3);
@@ -1357,7 +1384,7 @@ void loop() {
       lcd.print(':');
       lcd.print(minute, DEC);
 
-      if (!humi1) {
+      if (!humi1 && H1LL.toInt() != 0 && H1UL.toInt() != 0) {
         if (H1 > H1UL.toInt()) {
           digitalWrite(r7, LOW);
           Serial.println(deviceName + "_WARN_H1_High_SV_" + H1SV + "_PV_" + H1);
@@ -1369,7 +1396,7 @@ void loop() {
           digitalWrite(r8, HIGH);
         }
       }
-      if (!humi2) {
+      if (!humi2 && H2LL.toInt() != 0 && H2UL.toInt() != 0) {
         if (H2 > H2UL.toInt()) {
           digitalWrite(r7, LOW);
           Serial.println(deviceName + "_WARN_H2_High_SV_" + H2SV + "_PV_" + H2);
@@ -1381,7 +1408,7 @@ void loop() {
           digitalWrite(r8, HIGH);
         }
       }
-      if (!humi3) {
+      if (!humi3 && H3LL.toInt() != 0 && H3UL.toInt() != 0) {
         if (H3 > H3UL.toInt()) {
           digitalWrite(r7, LOW);
           Serial.println(deviceName + "_WARN_H3_High_SV_" + H3SV + "_PV_" + H3);
@@ -1393,7 +1420,7 @@ void loop() {
           digitalWrite(r8, HIGH);
         }
       }
-      if (!humi4) {
+      if (!humi4 && H4LL.toInt() != 0 && H4UL.toInt() != 0) {
         if (H4 > H4UL.toInt()) {
           digitalWrite(r7, LOW);
           Serial.println(deviceName + "_WARN_H4_High_SV_" + H4SV + "_PV_" + H4);
@@ -1484,7 +1511,7 @@ void loop() {
       lcd.print(day, DEC);
       lcd.print('/');
       lcd.print(month, DEC);
-      if (!temp1) {
+      if (!temp1 && T1LL.toFloat() != 0 && T1UL.toFloat() != 0) {
         if (T1 > T1UL.toFloat()) {
           digitalWrite(r1, LOW);
           Serial.println(deviceName + "_WARN_T1_High_SV_" + T1SV + "_PV_" + T1);
@@ -1502,7 +1529,7 @@ void loop() {
           lcd.print("  ");
         }
       }
-      if (!humi1) {
+      if (!humi1 && H1LL.toInt() != 0 && H1UL.toInt() != 0) {
         if (H1 > H1UL.toInt()) {
           digitalWrite(r1, LOW);
           Serial.println(deviceName + "_WARN_H1_High_SV_" + H1SV + "_PV_" + H1);
@@ -1643,7 +1670,7 @@ void loop() {
       }
       lcd.setCursor(15, 1);
       lcd.print(" ");
-      if (!temp1) {
+      if (!temp1 && T1LL.toFloat() != 0 && T1UL.toFloat() != 0) {
         if (T1 > T1UL.toFloat()) {
           digitalWrite(r1, LOW);
           Serial.println(deviceName + "_WARN_T1_High_SV_" + T1SV + "_PV_" + T1);
@@ -1661,7 +1688,7 @@ void loop() {
           lcd.print(" ");
         }
       }
-      if (!temp2) {
+      if (!temp2 && T2LL.toFloat() != 0 && T2UL.toFloat() != 0) {
         if (T2 > T2UL.toFloat()) {
           digitalWrite(r3, LOW);
           Serial.println(deviceName + "_WARN_T2_High_SV_" + T2SV + "_PV_" + T2);
@@ -1679,7 +1706,7 @@ void loop() {
           lcd.print(" ");
         }
       }
-      if (!humi1) {
+      if (!humi1 && H1LL.toInt() != 0 && H1UL.toInt() != 0) {
         if (H1 > H1UL.toInt()) {
           digitalWrite(r1, LOW);
           Serial.println(deviceName + "_WARN_H1_High_SV_" + H1SV + "_PV_" + H1);
@@ -1697,7 +1724,7 @@ void loop() {
           lcd.print(" ");
         }
       }
-      if (!humi2) {
+      if (!humi2 && H2LL.toInt() != 0 && H2UL.toInt() != 0) {
         if (H2 > H2UL.toInt()) {
           digitalWrite(r3, LOW);
           Serial.println(deviceName + "_WARN_H2_High_SV_" + H2SV + "_PV_" + H2);
@@ -1884,7 +1911,7 @@ void loop() {
       lcd.setCursor(15, 1);
       lcd.print(" ");
 
-      if (!temp1) {
+      if (!temp1 && T1LL.toFloat() != 0 && T1UL.toFloat() != 0) {
         if (T1 > T1UL.toFloat()) {
           digitalWrite(r1, LOW);
           Serial.println(deviceName + "_WARN_T1_High_SV_" + T1SV + "_PV_" + T1);
@@ -1902,7 +1929,7 @@ void loop() {
           lcd.print(" ");
         }
       }
-      if (!temp2) {
+      if (!temp2 && T2LL.toFloat() != 0 && T2UL.toFloat() != 0) {
         if (T2 > T2UL.toFloat()) {
           digitalWrite(r3, LOW);
           Serial.println(deviceName + "_WARN_T2_High_SV_" + T2SV + "_PV_" + T2);
@@ -1920,7 +1947,7 @@ void loop() {
           lcd.print(" ");
         }
       }
-      if (!temp3) {
+      if (!temp3 && T3LL.toFloat() != 0 && T3UL.toFloat() != 0) {
         if (T3 > T3UL.toFloat()) {
           digitalWrite(r5, LOW);
           Serial.println(deviceName + "_WARN_T3_High_SV_" + T3SV + "_PV_" + T3);
@@ -1938,7 +1965,7 @@ void loop() {
           lcd.print(" ");
         }
       }
-      if (!humi1) {
+      if (!humi1 && H1LL.toInt() != 0 && H1UL.toInt() != 0) {
         if (H1 > H1UL.toInt()) {
           digitalWrite(r1, LOW);
           Serial.println(deviceName + "_WARN_H1_High_SV_" + H1SV + "_PV_" + H1);
@@ -1956,7 +1983,7 @@ void loop() {
           lcd.print(" ");
         }
       }
-      if (!humi2) {
+      if (!humi2 && H2LL.toInt() != 0 && H2UL.toInt() != 0) {
         if (H2 > H2UL.toInt()) {
           digitalWrite(r3, LOW);
           Serial.println(deviceName + "_WARN_H2_High_SV_" + H2SV + "_PV_" + H2);
@@ -1974,7 +2001,7 @@ void loop() {
           lcd.print(" ");
         }
       }
-      if (!humi3) {
+      if (!humi3 && H3LL.toInt() != 0 && H3UL.toInt() != 0) {
         if (H3 > H3UL.toInt()) {
           digitalWrite(r5, LOW);
           Serial.println(deviceName + "_WARN_H3_High_SV_" + H3SV + "_PV_" + H3);
@@ -2205,7 +2232,7 @@ void loop() {
       } else {
         lcd.print("%");
       }
-      if (!temp1) {
+      if (!temp1 && T1LL.toFloat() != 0 && T1UL.toFloat() != 0) {
         if (T1 > T1UL.toFloat()) {
           digitalWrite(r1, LOW);
           Serial.println(deviceName + "_WARN_T1_High_SV_" + T1SV + "_PV_" + T1);
@@ -2217,7 +2244,7 @@ void loop() {
           digitalWrite(r2, HIGH);
         }
       }
-      if (!temp2) {
+      if (!temp2 && T2LL.toFloat() != 0 && T2UL.toFloat() != 0) {
         if (T2 > T2UL.toFloat()) {
           digitalWrite(r3, LOW);
           Serial.println(deviceName + "_WARN_T2_High_SV_" + T2SV + "_PV_" + T2);
@@ -2229,7 +2256,7 @@ void loop() {
           digitalWrite(r4, HIGH);
         }
       }
-      if (!temp3) {
+      if (!temp3 && T3LL.toFloat() != 0 && T3UL.toFloat() != 0) {
         if (T3 > T3UL.toFloat()) {
           digitalWrite(r5, LOW);
           Serial.println(deviceName + "_WARN_T3_High_SV_" + T3SV + "_PV_" + T3);
@@ -2241,7 +2268,7 @@ void loop() {
           digitalWrite(r6, HIGH);
         }
       }
-      if (!temp4) {
+      if (!temp4 && T4LL.toFloat() != 0 && T4UL.toFloat() != 0) {
         if (T4 > T4UL.toFloat()) {
           digitalWrite(r7, LOW);
           Serial.println(deviceName + "_WARN_T4_High_SV_" + T4SV + "_PV_" + T4);
@@ -2253,7 +2280,7 @@ void loop() {
           digitalWrite(r8, HIGH);
         }
       }
-      if (!humi1) {
+      if (!humi1 && H1LL.toInt() != 0 && H1UL.toInt() != 0) {
         if (H1 > H1UL.toInt()) {
           digitalWrite(r1, LOW);
           Serial.println(deviceName + "_WARN_H1_High_SV_" + H1SV + "_PV_" + H1);
@@ -2265,7 +2292,7 @@ void loop() {
           digitalWrite(r2, HIGH);
         }
       }
-      if (!humi2) {
+      if (!humi2 && H2LL.toInt() != 0 && H2UL.toInt() != 0) {
         if (H2 > H2UL.toInt()) {
           digitalWrite(r3, LOW);
           Serial.println(deviceName + "_WARN_H2_High_SV_" + H2SV + "_PV_" + H2);
@@ -2277,7 +2304,7 @@ void loop() {
           digitalWrite(r4, HIGH);
         }
       }
-      if (!humi3) {
+      if (!humi3 && H3LL.toInt() != 0 && H3UL.toInt() != 0) {
         if (H3 > H3UL.toInt()) {
           digitalWrite(r5, LOW);
           Serial.println(deviceName + "_WARN_H3_High_SV_" + H3SV + "_PV_" + H3);
@@ -2289,7 +2316,7 @@ void loop() {
           digitalWrite(r6, HIGH);
         }
       }
-      if (!humi4) {
+      if (!humi4 && H4LL.toInt() != 0 && H4UL.toInt() != 0) {
         if (H4 > H4UL.toInt()) {
           digitalWrite(r7, LOW);
           Serial.println(deviceName + "_WARN_H4_High_SV_" + H4SV + "_PV_" + H4);
@@ -2379,43 +2406,44 @@ float Fahrenheit(float celsius) {
 void writeConfigToSD() {
   dataFile = SD.open("config.txt", O_WRITE | O_CREAT | O_TRUNC);
   if (dataFile) {
-    dataFile.println(deviceName);
-    dataFile.println(trim(logType));
-    dataFile.println(NoOfSensor);
-    dataFile.println(rType);
-    dataFile.println(T1SV);
-    dataFile.println(H1SV);
-    dataFile.println(T1UL);
-    dataFile.println(T1LL);
-    dataFile.println(H1UL);
-    dataFile.println(H1LL);
-    dataFile.println(T1C);
-    dataFile.println(H1C);
-    dataFile.println(T2SV);
-    dataFile.println(H2SV);
-    dataFile.println(T2UL);
-    dataFile.println(T2LL);
-    dataFile.println(H2UL);
-    dataFile.println(H2LL);
-    dataFile.println(T2C);
-    dataFile.println(H2C);
-    dataFile.println(T3SV);
-    dataFile.println(H3SV);
-    dataFile.println(T3UL);
-    dataFile.println(T3LL);
-    dataFile.println(H3UL);
-    dataFile.println(H3LL);
-    dataFile.println(T3C);
-    dataFile.println(H3C);
-    dataFile.println(T4SV);
-    dataFile.println(H4SV);
-    dataFile.println(T4UL);
-    dataFile.println(T4LL);
-    dataFile.println(H4UL);
-    dataFile.println(H4LL);
-    dataFile.println(T4C);
-    dataFile.println(H4C);
+    dataFile.print(deviceName + "_");
+    dataFile.print(logType + "_");
+    dataFile.print(NoOfSensor + "_");
+    dataFile.print(rType + "_");
+    dataFile.print(T1SV + "_");
+    dataFile.print(H1SV + "_");
+    dataFile.print(T1UL + "_");
+    dataFile.print(T1LL + "_");
+    dataFile.print(H1UL + "_");
+    dataFile.print(H1LL + "_");
+    dataFile.print(T1C + "_");
+    dataFile.print(H1C + "_");
+    dataFile.print(T2SV + "_");
+    dataFile.print(H2SV + "_");
+    dataFile.print(T2UL + "_");
+    dataFile.print(T2LL + "_");
+    dataFile.print(H2UL + "_");
+    dataFile.print(H2LL + "_");
+    dataFile.print(T2C + "_");
+    dataFile.print(H2C + "_");
+    dataFile.print(T3SV + "_");
+    dataFile.print(H3SV + "_");
+    dataFile.print(T3UL + "_");
+    dataFile.print(T3LL + "_");
+    dataFile.print(H3UL + "_");
+    dataFile.print(H3LL + "_");
+    dataFile.print(T3C + "_");
+    dataFile.print(H3C + "_");
+    dataFile.print(T4SV + "_");
+    dataFile.print(H4SV + "_");
+    dataFile.print(T4UL + "_");
+    dataFile.print(T4LL + "_");
+    dataFile.print(H4UL + "_");
+    dataFile.print(H4LL + "_");
+    dataFile.print(T4C + "_");
+    dataFile.print(H4C);
     dataFile.close();
+    Serial.println("Writing Successfull");  //Debug 
   } else {
     Serial.println("Error opening config file for writing");
   }
@@ -2424,47 +2452,45 @@ void writeConfigToSD() {
 void readConfigFromSD() {
   dataFile = SD.open("config.txt", FILE_READ);
   if (dataFile) {
-    if (dataFile.size() > 0) {
-      deviceName = dataFile.readStringUntil('\n');
-      trim(logType) = dataFile.readStringUntil('\n');
-      NoOfSensor = dataFile.readStringUntil('\n');
-      rType = dataFile.readStringUntil('\n');
-      T1SV = dataFile.readStringUntil('\n');
-      H1SV = dataFile.readStringUntil('\n');
-      T1UL = dataFile.readStringUntil('\n');
-      T1LL = dataFile.readStringUntil('\n');
-      H1UL = dataFile.readStringUntil('\n');
-      H1LL = dataFile.readStringUntil('\n');
-      T1C = dataFile.readStringUntil('\n');
-      H1C = dataFile.readStringUntil('\n');
-      T2SV = dataFile.readStringUntil('\n');
-      H2SV = dataFile.readStringUntil('\n');
-      T2UL = dataFile.readStringUntil('\n');
-      T2LL = dataFile.readStringUntil('\n');
-      H2UL = dataFile.readStringUntil('\n');
-      H2LL = dataFile.readStringUntil('\n');
-      T2C = dataFile.readStringUntil('\n');
-      H2C = dataFile.readStringUntil('\n');
-      T3SV = dataFile.readStringUntil('\n');
-      H3SV = dataFile.readStringUntil('\n');
-      T3UL = dataFile.readStringUntil('\n');
-      T3LL = dataFile.readStringUntil('\n');
-      H3UL = dataFile.readStringUntil('\n');
-      H3LL = dataFile.readStringUntil('\n');
-      T3C = dataFile.readStringUntil('\n');
-      H3C = dataFile.readStringUntil('\n');
-      T4SV = dataFile.readStringUntil('\n');
-      H4SV = dataFile.readStringUntil('\n');
-      T4UL = dataFile.readStringUntil('\n');
-      T4LL = dataFile.readStringUntil('\n');
-      H4UL = dataFile.readStringUntil('\n');
-      H4LL = dataFile.readStringUntil('\n');
-      T4C = dataFile.readStringUntil('\n');
-      H4C = dataFile.readStringUntil('\n');
-      dataFile.close();
-    } else {
-      Serial.println(deviceName + "_Error_EmptyConfig");
-    }
+    String config = dataFile.readStringUntil('\n');
+    splitString(config, '_', body);
+    deviceName = body[0];
+    logType = body[1];
+    NoOfSensor = body[2];
+    rType = body[3];
+    T1SV = body[4];
+    H1SV = body[5];
+    T1UL = body[6];
+    T1LL = body[7];
+    H1UL = body[8];
+    H1LL = body[9];
+    T1C = body[10];
+    H1C = body[11];
+    T2SV = body[12];
+    H2SV = body[13];
+    T2UL = body[14];
+    T2LL = body[15];
+    H2UL = body[16];
+    H2LL = body[17];
+    T2C = body[18];
+    H2C = body[19];
+    T3SV = body[20];
+    H3SV = body[21];
+    T3UL = body[22];
+    T3LL = body[23];
+    H3UL = body[24];
+    H3LL = body[25];
+    T3C = body[26];
+    H3C = body[27];
+    T4SV = body[28];
+    H4SV = body[29];
+    T4UL = body[30];
+    T4LL = body[31];
+    H4UL = body[32];
+    H4LL = body[33];
+    T4C = body[34];
+    H4C = body[35];
+    dataFile.close();
   } else {
     Serial.println("Error opening config file");
   }
