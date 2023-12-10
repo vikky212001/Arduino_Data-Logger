@@ -189,6 +189,22 @@ void loop() {
   bool humi3 = false;
   bool humi4 = false;
 
+  if (T1C.toFloat() != 0 && H1C.toInt() != 0 && NoOfSensor.toInt() >= 1) {
+    T1 = T1 + T1C.toFloat();
+    H1 = H1 + H1C.toInt();
+  }
+  if (T2C.toFloat() != 0 && H2C.toInt() != 0 && NoOfSensor.toInt() >= 2) {
+    T2 = T2 + T2C.toFloat();
+    H2 = H2 + H2C.toInt();
+  }
+  if (T3C.toFloat() != 0 && H3C.toInt() != 0 && NoOfSensor.toInt() >= 3) {
+    T3 = T3 + T3C.toFloat();
+    H3 = H3 + H3C.toInt();
+  }
+  if (T4C.toFloat() != 0 && H4C.toInt() != 0 && NoOfSensor.toInt() == 4) {
+    T4 = T4 + T4C.toFloat();
+    H4 = H4 + H4C.toInt();
+  }
   for (int i = 0; i < 20; i++) {
     head[i] = "";
   }
@@ -398,8 +414,8 @@ void loop() {
             H4C = body[34];
           }
         }
-        writeConfigToSD();
       }
+      writeConfigToSD();
     }
   }
   logType = trim(logType);
@@ -2443,7 +2459,6 @@ void writeConfigToSD() {
     dataFile.print(T4C + "_");
     dataFile.print(H4C);
     dataFile.close();
-    Serial.println("Writing Successfull");  //Debug 
   } else {
     Serial.println("Error opening config file for writing");
   }
