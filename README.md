@@ -8,4 +8,5 @@ Arduino MEGA <br>
 LCD KeyPad Shield<br>
 DHT11 (Tempearture & Humidity Sensor)</br>
 DS3231 RTC (Real Time Clock)</br>
-Micro SD-Card Module<br>
+Micro SD-Card Module</br>
+8-CH Relay Module</br>
